@@ -17,7 +17,10 @@ public class EnemyScript : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player");
         StartCoroutine(FOVRoutine());
     }
-
+    private void Update()
+    {
+        MovementHandler();
+    }
 
     #region "FOV""
     private IEnumerator FOVRoutine()
@@ -53,4 +56,19 @@ public class EnemyScript : MonoBehaviour
             inSight = false;
     }
     #endregion
+
+    #region Movement
+    private void MovementHandler()
+    {
+        if (inSight)
+        {
+            Vector3 dir = player.transform.position - transform.position;
+            transform.Translate(dir.normalized * Time.deltaTime * 2, Space.World);
+            Quaternion lookRotation = Quaternion.LookRotation(dir);
+            Vector3 rotation = Quaternion.Lerp(transform.rotation, lookRotation, Time.deltaTime * 10f).eulerAngles;
+            transform.rotation = Quaternion.Euler(0f, rotation.y, 0f);
+        }
+    }
+
+    #endregion,
 }
